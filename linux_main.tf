@@ -178,9 +178,9 @@ resource "azurerm_virtual_machine_extension" "postinstall" {
     location        = "eastus"
     resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
     virtual_machine_name = "${azurerm_virtual_machine.linuxterraformvm.name}"
-    publisher           = "Microsoft.Compute"
-    type                = "CustomScriptExtension"
-    type_handler_version    = "1.8"
+    publisher           = "Microsoft.OSTCExtensions"
+    type                = "CustomScriptForLinux"
+    type_handler_version    = "1.5.4"
 
     settings = <<SETTINGS
     {
