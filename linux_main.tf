@@ -180,7 +180,7 @@ resource "azurerm_virtual_machine_extension" "postinstall" {
     virtual_machine_name = "${azurerm_virtual_machine.linuxterraformvm.name}"
     publisher           = "Microsoft.OSTCExtensions"
     type                = "CustomScriptForLinux"
-    type_handler_version    = "1.2"
+    type_handler_version    = "1.5"
 
     settings = <<SETTINGS
     {
