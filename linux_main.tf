@@ -8,7 +8,7 @@ resource "azurerm_virtual_network" "linuxterraformnetwork" {
     name                = "linuxVnet"
     address_space       = ["10.0.0.0/16"]
     location            = "eastus"
-    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
+    resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
 
     tags {
         environment = "Terraform Demo"
@@ -16,14 +16,14 @@ resource "azurerm_virtual_network" "linuxterraformnetwork" {
 }
 resource "azurerm_subnet" "linuxterraformsubnet" {
     name                 = "linuxSubnet"
-    resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
-    virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
+    resource_group_name  = "${azurerm_resource_group.linuxterraformgroup.name}"
+    virtual_network_name = "${azurerm_virtual_network.linuxterraformnetwork.name}"
     address_prefix       = "10.0.2.0/24"
 }
 resource "azurerm_public_ip" "linuxterraformpublicip" {
     name                         = "linuxPublicIP"
     location                     = "eastus"
-    resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
+    resource_group_name          = "${azurerm_resource_group.linuxterraformgroup.name}"
     allocation_method            = "Dynamic"
 
     tags {
@@ -33,7 +33,7 @@ resource "azurerm_public_ip" "linuxterraformpublicip" {
 resource "azurerm_network_security_group" "linuxterraformnsg" {
     name                = "linuxNetworkSecurityGroup"
     location            = "eastus"
-    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
+    resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
     
     security_rule {
         name                       = "SSH"
@@ -100,14 +100,14 @@ resource "azurerm_network_security_group" "linuxterraformnsg" {
 resource "azurerm_network_interface" "linuxterraformnic" {
     name                = "linuxNIC"
     location            = "eastus"
-    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
-    network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
+    resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
+    network_security_group_id = "${azurerm_network_security_group.linuxterraformnsg.id}"
 
     ip_configuration {
         name                          = "linuxNicConfiguration"
-        subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
+        subnet_id                     = "${azurerm_subnet.linuxterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
-        public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip.id}"
+        public_ip_address_id          = "${azurerm_public_ip.linuxterraformpublicip.id}"
     }
 
     tags {
@@ -117,14 +117,14 @@ resource "azurerm_network_interface" "linuxterraformnic" {
 resource "random_id" "randomId" {
     keepers = {
         # Generate a new ID only when a new resource group is defined
-        resource_group = "${azurerm_resource_group.myterraformgroup.name}"
+        resource_group = "${azurerm_resource_group.linuxterraformgroup.name}"
     }
     
     byte_length = 8
 }
 resource "azurerm_storage_account" "linuxstorageaccount" {
     name                = "diag${random_id.randomId.hex}"
-    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
+    resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
     location            = "eastus"
     account_replication_type = "LRS"
     account_tier = "Standard"
@@ -136,8 +136,8 @@ resource "azurerm_storage_account" "linuxstorageaccount" {
 resource "azurerm_virtual_machine" "linuxterraformvm" {
     name                  = "linuxVM"
     location              = "eastus"
-    resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
-    network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
+    resource_group_name   = "${azurerm_resource_group.linuxterraformgroup.name}"
+    network_interface_ids = ["${azurerm_network_interface.linuxterraformnic.id}"]
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
@@ -166,7 +166,7 @@ resource "azurerm_virtual_machine" "linuxterraformvm" {
     
     boot_diagnostics {
         enabled     = "true"
-        storage_uri = "${azurerm_storage_account.mystorageaccount.primary_blob_endpoint}"
+        storage_uri = "${azurerm_storage_account.linuxstorageaccount.primary_blob_endpoint}"
     }
 
     tags {
@@ -176,8 +176,8 @@ resource "azurerm_virtual_machine" "linuxterraformvm" {
 resource "azurerm_virtual_machine_extension" "postinstall" {
     name            = "extension"
     location        = "eastus"
-    resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
-    virtual_machine_name = "${azurerm_virtual_machine.myterraformvm.name}"
+    resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
+    virtual_machine_name = "${azurerm_virtual_machine.linuxterraformvm.name}"
     publisher           = "Microsoft.Compute"
     type                = "CustomScriptExtension"
     type_handler_version    = "1.8"
