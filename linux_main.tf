@@ -159,7 +159,10 @@ resource "azurerm_virtual_machine" "myterraformvm" {
         admin_username = "j2user"
         admin_password ="j2andUtoo"    
     }   
-
+    
+    os_profile_linux_config {
+        disable_password_authentication = "false"
+    }
     
     boot_diagnostics {
         enabled     = "true"
