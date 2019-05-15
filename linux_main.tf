@@ -174,7 +174,7 @@ resource "azurerm_virtual_machine" "linuxterraformvm" {
     }
 }
 resource "azurerm_virtual_machine_extension" "postinstall" {
-    name            = "extension"
+    name            = "postinstallextension"
     location        = "eastus"
     resource_group_name = "${azurerm_resource_group.linuxterraformgroup.name}"
     virtual_machine_name = "${azurerm_virtual_machine.linuxterraformvm.name}"
