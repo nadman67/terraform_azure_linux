@@ -1,11 +1,11 @@
 provider "azurerm" {
 }
-resource "azurerm_resource_group" "myterraformgroup" {
-        name = "myResourceGroup"
+resource "azurerm_resource_group" "linuxterraformgroup" {
+        name = "linuxResourceGroup"
         location = "eastus"
 }
-resource "azurerm_virtual_network" "myterraformnetwork" {
-    name                = "myVnet"
+resource "azurerm_virtual_network" "linuxterraformnetwork" {
+    name                = "linuxVnet"
     address_space       = ["10.0.0.0/16"]
     location            = "eastus"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
@@ -14,14 +14,14 @@ resource "azurerm_virtual_network" "myterraformnetwork" {
         environment = "Terraform Demo"
     }
 }
-resource "azurerm_subnet" "myterraformsubnet" {
-    name                 = "mySubnet"
+resource "azurerm_subnet" "linuxterraformsubnet" {
+    name                 = "linuxSubnet"
     resource_group_name  = "${azurerm_resource_group.myterraformgroup.name}"
     virtual_network_name = "${azurerm_virtual_network.myterraformnetwork.name}"
     address_prefix       = "10.0.2.0/24"
 }
-resource "azurerm_public_ip" "myterraformpublicip" {
-    name                         = "myPublicIP"
+resource "azurerm_public_ip" "linuxterraformpublicip" {
+    name                         = "linuxPublicIP"
     location                     = "eastus"
     resource_group_name          = "${azurerm_resource_group.myterraformgroup.name}"
     allocation_method            = "Dynamic"
@@ -30,8 +30,8 @@ resource "azurerm_public_ip" "myterraformpublicip" {
         environment = "Terraform Demo"
     }
 }
-resource "azurerm_network_security_group" "myterraformnsg" {
-    name                = "myNetworkSecurityGroup"
+resource "azurerm_network_security_group" "linuxterraformnsg" {
+    name                = "linuxNetworkSecurityGroup"
     location            = "eastus"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
     
@@ -97,14 +97,14 @@ resource "azurerm_network_security_group" "myterraformnsg" {
         environment = "Terraform Demo"
     }
 }
-resource "azurerm_network_interface" "myterraformnic" {
-    name                = "myNIC"
+resource "azurerm_network_interface" "linuxterraformnic" {
+    name                = "linuxNIC"
     location            = "eastus"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
     network_security_group_id = "${azurerm_network_security_group.myterraformnsg.id}"
 
     ip_configuration {
-        name                          = "myNicConfiguration"
+        name                          = "linuxNicConfiguration"
         subnet_id                     = "${azurerm_subnet.myterraformsubnet.id}"
         private_ip_address_allocation = "Dynamic"
         public_ip_address_id          = "${azurerm_public_ip.myterraformpublicip.id}"
@@ -122,7 +122,7 @@ resource "random_id" "randomId" {
     
     byte_length = 8
 }
-resource "azurerm_storage_account" "mystorageaccount" {
+resource "azurerm_storage_account" "linuxstorageaccount" {
     name                = "diag${random_id.randomId.hex}"
     resource_group_name = "${azurerm_resource_group.myterraformgroup.name}"
     location            = "eastus"
@@ -133,15 +133,15 @@ resource "azurerm_storage_account" "mystorageaccount" {
         environment = "Terraform Demo"
     }
 }
-resource "azurerm_virtual_machine" "myterraformvm" {
-    name                  = "myVM"
+resource "azurerm_virtual_machine" "linuxterraformvm" {
+    name                  = "linuxVM"
     location              = "eastus"
     resource_group_name   = "${azurerm_resource_group.myterraformgroup.name}"
     network_interface_ids = ["${azurerm_network_interface.myterraformnic.id}"]
     vm_size               = "Standard_DS1_v2"
 
     storage_os_disk {
-        name              = "myOsDisk"
+        name              = "linuxOsDisk"
         caching           = "ReadWrite"
         create_option     = "FromImage"
         managed_disk_type = "Premium_LRS"
@@ -155,7 +155,7 @@ resource "azurerm_virtual_machine" "myterraformvm" {
     }
 
     os_profile {
-        computer_name  = "myvm"
+        computer_name  = "linuxvm"
         admin_username = "j2user"
         admin_password ="j2andUtoo"    
     }   
